@@ -1,10 +1,11 @@
 # Baromètre de la science ouverte d'Université de Paris
 
-Ce baromètre reprend celui réalisé par l'université de Lorraine (mars 2020), dont le code est partagé sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
+Ce baromètre science ouverte reprend celui réalisé par l'université de Lorraine (mars 2020), dont le code est partagé sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
 
-* [Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
+<!-- ([Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
+-->
 
-* [Sur l'intégration des publications de HAL sans DOI](#Sur-l-intégration-des-publications-sans-doi)
+* [Sur l'intégration des publications de HAL sans DOI](#Sur-lintégration-des-publications-sans-doi)
 
 * [Sur la détection des frais de publications(APC)](#Sur-la-détection-des-APC)
 
@@ -65,11 +66,11 @@ doc à traiter sans doi 		 9891
 
 ## Améliorations effectuées
 
-- `b_recuperer_data.py` lors de l'étape de récupération des métadonnées dans Unpaywall et HAL ajout d'un "chariot" qui permet de le faire en plusieurs fois (permet de faire face à des erreurs via l'API de HAL)
+- `b_recuperer_data.py` lors de l'étape de récupération des métadonnées dans Unpaywall et HAL ajout d'un "chariot" qui permet de le faire en plusieurs fois (solutionne une erreur de l'API de HAL)
 
-- `d_aligner_data.py` import/export pour prendre en compte l'enrichissement possible des domaines via le MESRI
+- `d_aligner_data.py` prise en compte de l'enrichissement potentiel via le MESRI
 
-- `d_aligner_data.py` la présence de fichier dans HAL sous embargo n'équivault pas à de l'accès ouvert (métadonnée HAL `openAccess_bool`)
+- `d_aligner_data.py` la présence de fichier dans HAL sous embargo n'est plus de l'accès ouvert (métadonnée HAL `openAccess_bool`)
 
 - `e_produire_graphique.py` des nouveaux graphiques
 
