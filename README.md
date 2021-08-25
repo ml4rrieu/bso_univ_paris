@@ -66,13 +66,11 @@ doc à traiter sans doi 		 9891
 
 ## Améliorations effectuées
 
-- `b_recuperer_data.py` lors de l'étape de récupération des métadonnées dans Unpaywall et HAL ajout d'un "chariot" qui permet de le faire en plusieurs fois (solutionne une erreur de l'API de HAL)
+- `b_recuperer_data.py` la récupération des métadonnées dans HAL et Unpaywall se fait à l'aide d'un chariot permettant d'arrêter le processus sans perdre les métadonnées (nécessaire en cas d'erreur chez une API)
 
-- `d_aligner_data.py` prise en compte de l'enrichissement potentiel via le MESRI
+- `d_aligner_data.py` ajout de l'option d'enrichissement des domaines via le MESRI
 
-- `d_aligner_data.py` la présence de fichier dans HAL sous embargo n'est plus de l'accès ouvert (métadonnée HAL `openAccess_bool`)
-
-- `e_produire_graphique.py` des nouveaux graphiques
+- `d_aligner_data.py` un fichier dans HAL mais sous embargo n'est plus considéré comme de l'accès ouvert (métadonnée HAL `openAccess_bool`)
 
 
 ## Schéma de données
