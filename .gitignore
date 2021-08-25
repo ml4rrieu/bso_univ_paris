@@ -1,0 +1,10 @@
+
+/misc
+
+/data/**
+/data/APC_tracking/*
+/data/out/*
+
+!data/out/step_d_complete.csv
+!/data/out
+!/data/APC_tracking
