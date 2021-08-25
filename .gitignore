@@ -6,5 +6,5 @@
 /data/out/*
 
 !data/out/step_d_complete.csv
-!/data/out/readme.md
+!/data/readme.md
 !/data/APC_tracking/
