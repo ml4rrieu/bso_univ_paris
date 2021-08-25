@@ -82,37 +82,33 @@ doc à traiter sans doi 		 9891
 | doi                |                                                                                               |                          |
 | halId              | Publication deposit id in HAL                                                                 | hal                      |
 | hal_coverage       | Hal coverage (in or missing )                                                                 | hal                      |
+| upw_coverage       | Unpaywall coverage (oa, missing, closed)                                                      | unpaywall                |
 | title              |                                                                                               | hal or unpaywall         |
-| genre              | Document type                                                                                 | hal or unpaywall         |
-| author_count       | Curiosity : number of authors                                                                 | hal or unpaywall         |
+| hal_docType        | Type of document                                                                              | hal                      |
+| hal_location       | Where OA is founded (file, arxiv, pubmedcentral), notice if not OA                            | hal                      |
+| hal_openAccess_bool| is the document in Open Access									                             | hal                      |
+| hal_submittedDate  | When the publication has been submitted in HAL                                                | hal                      |
+| hal_licence        | Licence in HAL deposit                                                                        | hal                      |
+| hal_selfArchiving  | Curiosity : is the deposit made by the author                                                 | hal                      |
+| hal_domain         | Domain, scientific field                                                                      | hal                      |
 | published_date     |                                                                                               | hal or unpaywall         |
 | published_year     |                                                                                               | hal or unpaywall         |
 | journal_name       |                                                                                               | hal or unpaywall         |
 | journal_issns      |                                                                                               | hal or unpaywall         |
 | publisher          |                                                                                               | hal or unpaywall         |
-| upw_coverage       | Unpaywall coverage (oa, missing, closed)                                                      | unpaywall                |
+| genre              | document type                                                                                 | hal or unpaywall         |
 | oa_status          | Status/type of open access (green, gold, hybrid, bronze)                                      | unpaywall                |
 | upw_location       | Where OA is founded (repository and/or publisher)                                             | unpaywall                |
 | version            | Publication version available (submitted, accepted, published)                                | unpaywall                |
+| suspicious_journal | Is the journal in "predatory" list                                                            | [Stop Predatory Journals](https://github.com/stop-predatory-journals/stop-predatory-journals.github.io)|
 | licence            | licence finded in unpaywall                                                                   | unpaywall                |
 | journal_is_in_doaj | Is this resource published in a DOAJ-indexed journal                                          | unpaywall                |
 | journal_is_oa      | Is this resource published in a completely OA journal                                         | unpaywall                |
+| author_count       | Curiosity : number of authors                                                                 | hal or unpaywall         |
 | is_paratext        | Is the item an ancillary part of a journal (column disappear if everything is False )         | unpaywall                |
-| suspicious_journal | Is the journal in "predatory" list                                                            | [Stop Predatory Journals](https://github.com/stop-predatory-journals/stop-predatory-journals.github.io)|
-| hal_submittedDate  | When the publication has been submitted in HAL                                                | hal                      |
-| hal_location       | Where OA is founded (file, arxiv, pubmedcentral), notice if not OA                            | hal                      |
-| hal_licence        | Licence in HAL deposit                                                                        | hal                      |
-| hal_serlArchiving  | Curiosity : is the deposit made by the author                                                 | hal                      |
-| hal_docType        | Type of document                                                                              | hal                      |
-| hal_domain         | Domain, scientific field                                                                      | hal                      |
 | apc_tracking       | APC information (doi_in_openapc, journal_in_openapc, journal_is_hybrid, apc_journals_in_doaj) | openapc, doaj, unpaywall |
 | apc_amount         | Rough approximation of APC cost                                                               | openapc, doaj            |
 | apc_currency       |                                                                                               | openapc, doaj            |
 | scientific_field   | Scientific field from barometre-science-ouverte and hal                                       | barometre-so, hal        |
 | is_oa              | Is there an OA copy of this ressource                                                         | hal, unpaywall           |
 | oa_type            | Publisher and/or repository                                                                   | hal, unpaywall           |
-
-
-
-
-
