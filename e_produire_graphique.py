@@ -20,7 +20,46 @@ df = df_raw[df_raw["is_paratext"] == ""]
 
 # circulaire // oa_evol // oa_discipline // oa_editeur // 
 # comparaison_bases // apc_evol // apc_discipline // bibliodiversity
-graph = "oa_editeur" 
+# disciplines
+graph = "bibliodiversity" 
+
+#====================disciplines=======================================
+# nb publications par discipline
+if graph == "disciplines" : 
+  print("graphique disciplines")
+  oneyear = df[ df["published_year"] == "2020.0"]
+
+  scifield =pd.crosstab(oneyear["scientific_field"], oneyear["is_oa"])
+  scifield.columns = ["not_oa", "is_oa"]
+  scifield["total"] = scifield["not_oa"] + scifield["is_oa"]
+ 
+  print(scifield)
+  
+  # ____1____ passer les données dans le modele de representation
+  fig, (ax) = plt.subplots(figsize=(12, 7), dpi=100, facecolor='w', edgecolor='k')
+
+  ax.bar(scifield.index, scifield["is_oa"].tolist(),  color='#7E96C4', align='center',label="Accès ouvert")
+
+  ax.bar(scifield.index, scifield["not_oa"].tolist(), bottom = scifield["is_oa"].tolist(), align='center', color='#BED0F4', label="Accès fermé")
+
+  # ____2____ configurer l'affichage
+  ax.spines['top'].set_visible(False)
+  ax.spines['right'].set_visible(False)
+  #ax.spines['left'].set_visible(False)
+  # retirer l'origine sur Y
+  yticks = ax.yaxis.get_major_ticks()
+  yticks[0].label1.set_visible(False)
+  ax.yaxis.grid(ls='--', alpha=0.4)
+  
+  ax.set_xticklabels(scifield.index, ha = "right", rotation = 60, fontsize = 12)
+
+  #plt.tight_layout()
+  plt.legend( loc = "upper center", fontsize = 14,  borderaxespad =1.7)
+  plt.title("Nombre de publications de 2020 par discipline", fontsize = 20, x = 0.5, y = 1, alpha = 0.6)
+  plt.savefig("img/publication_par_discipline.png", dpi=100, bbox_inches='tight')
+  
+  
+
 
 
 #====================CIRCULAIRE=======================================
@@ -409,12 +448,13 @@ if graph == "apc_evol" :
   fig, (ax) = plt.subplots(figsize=(15, 10), dpi=100, facecolor='w', edgecolor='k')
 
   ax.bar(df_apc.label, df_apc.has_apc_mean.tolist() , align='center', alpha = 1.0, color='lightpink',
-          ecolor='black', label="Avec frais de publications")
+          ecolor='black', label="Accès ouvert chez l'éditeur avec APC")
 
-  """ax.bar(dfoa.year_label, dfoa.oa_publisher_repository_mean.tolist(), align='center', alpha = 1.0, color='greenyellow',
-          bottom = dfoa.oa_repository_mean.tolist(),
-          ecolor='black', label="Éditeur et Archive ouverte")
-  """
+  no_apc = 1- df_apc["has_apc_mean"]
+  ax.bar(df_apc.label, no_apc,  align='center', alpha = 1.0, color='gainsboro',
+          bottom = df_apc.has_apc_mean.tolist(),
+          ecolor='black', label="Accès ouvert chez l'éditeur sans APC")
+  
 
   # ____2____ configurer l'affichage
   ax.spines['top'].set_visible(False)
@@ -440,12 +480,16 @@ if graph == "apc_evol" :
   for year_ix in range(len(df_apc.label)):
     ax.annotate("{:,.1%}".format(apc_percent[year_ix]),
                           xy=(year_ix , apc_percent[year_ix]),
-                          xytext=(0, 20),  
+                          xytext=(0, 10),  
                           size=16,
                           textcoords="offset points",
                           ha='center', va='bottom')
 
-  plt.title("Estimation du pourcentage de publications en accès ouvert \nchez l'éditeur avec frais de publications (APC)", fontsize = 25, x = 0.5, y = 1, alpha = 0.6)
+
+  plt.legend(loc='upper center', bbox_to_anchor=(0.5, 0.8) ,fontsize = 12)
+
+  plt.title("Estimation du pourcentage de publications en accès ouvert \nchez l'éditeur avec frais de publications (APC)",
+    fontsize = 25, x = 0.5, y = 1, alpha = 0.6)
   plt.savefig('./img/apc_evolution.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
 
 
@@ -512,10 +556,10 @@ if graph == "apc_discipline" :
   plt.ylabel(None, fontsize = 15)
 
   plt.title("Estimation du pourcentage des publications de 2020 \nen accès ouvert chez l'éditeur avec APC", fontsize = 25, x = 0.49, y = 1.05,  alpha = 0.6) 
-  plt.legend(['avec APC', 'sans APC'],
-                loc = 'best', ncol = 4,
-                frameon = True, markerscale = 1, title = None, fontsize = 13,
-                borderpad = 0.2, labelspacing = 0.3, bbox_to_anchor=(0.35, 0.985), framealpha= False)
+  plt.legend(['Accès ouvert chez l\'éditeur avec APC', 'Accès ouvert chez l\'éditeur sans APC'],
+                loc = 'upper center', ncol = 2,
+                frameon = True, markerscale = 1, title = None, fontsize = 12,
+                borderpad = 0.2, labelspacing = 0.3, bbox_to_anchor=(0.45, 1.025), framealpha= False)
 
   plt.savefig('./img/apc_discipline.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
 
@@ -524,6 +568,7 @@ if graph == "apc_discipline" :
 #====================bibliodiversity=======================================
 # pour éclairer la bibiodiversité
 if graph == "bibliodiversity" : 
+  print("graphique bibliodiversity")
   oneyear = df[ (df["published_year"] == "2020.0") & (df["publisher"]!= "") ].copy()
   #fusionner les éditeurs au mm nom
   oneyear["publisher"].replace({"Elsevier BV": "Elsevier"}, inplace = True)
@@ -552,8 +597,8 @@ if graph == "bibliodiversity" :
   df4graph = bibdiversity[:30]
 
   fig, (ax) = plt.subplots(figsize=(15, 10), dpi=100, facecolor='w', edgecolor='k')
-  ax.bar(df4graph.index, df4graph.is_oa, color = "lightsteelblue", label = "Accès ouvert")
-  ax.bar(df4graph.index, df4graph.not_oa, bottom = df4graph.is_oa , color = "gainsboro", label = "Accès fermé")
+  ax.bar(df4graph.index, df4graph.is_oa, color = "#7E96C4", label = "Accès ouvert")
+  ax.bar(df4graph.index, df4graph.not_oa, bottom = df4graph.is_oa , color = "#BED0F4", label = "Accès fermé")
 
   # ajout des noms des publishers en haut des histogrammes
   for x, y in zip(df4graph.index, df4graph.total) : 
@@ -584,8 +629,11 @@ if graph == "bibliodiversity" :
   
   # punchline
   plt.text(19, 2000 , string4graph, fontsize = 19)
-  plt.legend( loc = "upper center",fontsize = 14,  borderaxespad =1.7)
+  #
+
+  plt.legend( loc = "upper center",fontsize = 14, bbox_to_anchor=(0.5, 0.95),   borderaxespad =1.7)
   plt.title("Répartition des 30 premiers éditeurs\npar nombre de publications pour l'année 2020", fontsize = 25, x = 0.5, y = 1.03, alpha = 0.6)
+  plt.suptitle(f"éditeurs = {nb_publisher}    publications = {nb_publications}", fontsize = 13, x = 0.5, y = 0.89,  alpha = 0.6)
   plt.savefig('./img/bibliodiversite.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
 
   

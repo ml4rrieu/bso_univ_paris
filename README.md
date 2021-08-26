@@ -1,6 +1,8 @@
-# Baromètre de la science ouverte d'Université de Paris
+# Baromètre Science Ouverte Université de Paris
 
-Ce baromètre science ouverte reprend celui réalisé par l'université de Lorraine (mars 2020), dont le code est partagé sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
+_2021-08-01 : en construction_
+
+Le Baromètre de la science ouverte d'Université de Paris se base sur celui réalisé par l'université de la Lorraine en 2020 (voir code sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
 
 <!-- ([Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
 -->
@@ -9,7 +11,7 @@ Ce baromètre science ouverte reprend celui réalisé par l'université de Lorra
 
 * [Sur la détection des frais de publications(APC)](#Sur-la-détection-des-APC)
 
-* [Télécharger les données](/data/out/step_d_complete.csv) -- [Schéma de données](#schéma-de-données)
+* [Schéma de données](#schéma-de-données) -- [Télécharger les données](/data/out/step_d_complete.csv)  
 
 
 <br />
@@ -30,7 +32,7 @@ L'heuristique sur les APC permet de savoir si une publication a recquis des frai
 ## Notes de réalisation
 
 ```
-2021-06 : définition du périmètre
+2021-05/6  : définition du périmètre
 2021-07-05 : récupérer données HAL, Scopus
 2021-07-13 : récupérer données Wos, Pubmed, Lens
 2021-07-15 : métadonnées biblio récupérées
@@ -44,16 +46,14 @@ L'heuristique sur les APC permet de savoir si une publication a recquis des frai
 
 Statistiques - step_a 2021-07-24
 -------------------------
-Avant dédoublonnage nb publi 187_499
-Apres dédoublonnage sur DOI, nb publi 94_102
-Apres dédoublonnage DOI et (pour les sans DOI) sur titre , nb publi 89_746
-
-
-doc total apres dedoublonnage 		 89746
-docs exclus (no doi no halId)  		 6987
-doc inclus (doi ou halId)	 		 82759
-pertinence (doi ou halId)%	 		 92.2
-pertinence (doi only)%		 		 81.2
+Avant dédoublonnage 		 			187_499
+Apres dédoublonnage sur DOI			 	94_102
+Apres dédoublonnage DOI et (pour les sans DOI) sur titre 89_746
+doc total apres dedoublonnage 		 	89_746
+docs exclus (no doi no halId)  		 	69_87
+doc inclus (doi ou halId)	 		 	82_759
+pertinence (doi ou halId)%	 		 	92.2
+pertinence (doi only)%		 		 	81.2
 
 
 doc à traiter avec doi 		 72868
