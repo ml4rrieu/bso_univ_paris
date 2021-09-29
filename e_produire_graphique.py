@@ -1,5 +1,5 @@
 import pandas as pd, matplotlib, matplotlib.pyplot  as plt
-import numpy as np
+import numpy as np, math
 
 
 """
@@ -20,27 +20,209 @@ df = df_raw[df_raw["is_paratext"] == ""]
 
 # circulaire // oa_evol // oa_discipline // oa_editeur // 
 # comparaison_bases // apc_evol // apc_discipline // bibliodiversity
-# disciplines
-graph = "bibliodiversity" 
+# publication_discipline // doctype_evol
+graph = "publication_discipline" 
+
+
+#====================doctype_discipline=======================================
+# evolution des types de publications
+if graph == "doctype_discipline" : 
+  print("graphique doctype_discipline")
+  dfyears = df.loc[ df["published_year"] == "2020.0"].copy()
+
+  # netoyer les doctypes
+  dfyears["genre"].replace(
+    {"monograph" : "book",
+     "peer-review" : "other",
+      "journal-issue": "other", 
+      "reference-entry" : "book-chapter",
+      "component" : "other", # cest des données de la rech souvent
+      "reference-book" : "book", 
+      "journal" : "other",
+      "report" : "other",
+      "proceedings" : "other"
+      }, inplace = True)
+
+
+  fields = pd.crosstab(df["scientific_field"], dfyears["genre"])
+  # passer en pourcentage 
+  fields = fields.T
+  fields = fields / fields.sum() * 100
+  fields = fields.T
+  fields.sort_index(ascending = False, inplace = True)
+  
+  print(fields.columns)
+  ax = fields.plot(kind = "barh", stacked=True, figsize=(14, 10), color = ["#9dd866", "#6f4e7c", "#0b84a5", "grey", "#ffa056", "#f6c85f"])
+  
+  ## _______ configurer l'afichage
+  # remove axis
+  ax.spines['top'].set_visible(False)
+  ax.spines['right'].set_visible(False)
+  ax.spines['bottom'].set_visible(False)
+  # remove xticks
+  plt.tick_params(
+      axis='x',          # changes apply to the x-axis
+      which='both',      # both major and minor ticks are affected
+      bottom=False,      # ticks along the bottom edge are off
+      labelbottom=False) # labels along the bottom edge are off
+
+  labels = []
+  for j in fields.columns:
+      for i in fields.index:
+          label = fields.loc[i][j]
+          if type(label) != str : 
+            #pour un meilleur affichage : si ce n'est pas la discipline on arrondi 
+            label = str(round(label))
+            label += " %"     #:label.find(".")
+            labels.append(label)
+          
+
+  patches = ax.patches
+  for label, rect in zip(labels, patches):
+      width = rect.get_width()
+      if width > 3:
+          x = rect.get_x()
+          y = rect.get_y()
+          height = rect.get_height()
+          ax.text(x + width/2., y + height/2., label, ha='center', va='center', fontsize=8)
+
+  
+  plt.ylabel(None, fontsize = 15)
+  plt.legend(["Ouvrage", "Chapitre d'ouvrage", "Article de revue", "Autre", "Preprint", "Article de conférence"], 
+    frameon = True, markerscale = 1, loc = "center", ncol = 3, bbox_to_anchor=(0.5, 1.02), framealpha= False  )
+  plt.title("Types de publications de 2020 par discipline", fontsize = 25, x = 0.49, y = 1.07,  alpha = 0.6)
+  plt.savefig("img/doctype_par_discipline.png", dpi=100, bbox_inches='tight')
+
+
+
+#====================doctype_evol=======================================
+# evolution des types de publications
+if graph == "doctype_evol" : 
+  print("graphique doctype_evol")
+  dfyears = df.loc[ df["published_year"].isin(["2016.0", "2017.0", "2018.0", "2019.0", "2020.0"]), :].copy()
+
+  # view all doctypes 
+
+  # and clean as much as you want
+  dfyears["genre"].replace(
+    {"monograph" : "book",
+     "peer-review" : "other",
+      "journal-issue": "other", 
+      "reference-entry" : "book-chapter",
+      "component" : "other", # cest des données de la rech souvent
+      "reference-book" : "book", 
+      "journal" : "other",
+      "report" : "other",
+      "proceedings" : "other"
+      }, inplace = True)
+
+  print(dfyears["genre"].value_counts())
+  dfdoctype = pd.crosstab(dfyears["published_year"], dfyears["genre"]) 
+  
+  # ____1____ passer les données dans le modele de representation
+  fig, (ax) = plt.subplots(figsize=(12, 8), dpi=100, facecolor='w', edgecolor='k')
+
+  ax.bar(dfdoctype.index, dfdoctype["journal-article"] , align='center', alpha = 1.0,
+   color='#0b84a5', label="Article de revue")
+  
+  ax.bar(dfdoctype.index, dfdoctype["proceedings-article"] , bottom = dfdoctype["journal-article"],
+    align='center', alpha = 1.0, color='#f6c85f', label="Article de conférence")
+  
+  ax.bar(dfdoctype.index, dfdoctype["book-chapter"] , 
+    bottom = [sum(x) for x in zip(dfdoctype["journal-article"] , dfdoctype["proceedings-article"])],
+    align='center', alpha = 1.0, color='#6f4e7c', label="Chapitre d'ouvrage")
+
+  ax.bar(dfdoctype.index, dfdoctype["book"] , 
+    bottom = [sum(x) for x in zip(dfdoctype["journal-article"] , dfdoctype["proceedings-article"], 
+      dfdoctype["book-chapter"])],
+    align='center', alpha = 1.0, color="#9dd866", label="Ouvrage")
+
+  ax.bar(dfdoctype.index, dfdoctype["posted-content"] , 
+    bottom = [sum(x) for x in zip(dfdoctype["journal-article"] , dfdoctype["proceedings-article"], 
+      dfdoctype["book-chapter"], dfdoctype["book"])],
+    align='center', alpha = 1.0, color='#ffa056', label="Preprint")
+
+  ax.bar(dfdoctype.index, dfdoctype["other"] , 
+    bottom = [sum(x) for x in zip(dfdoctype["journal-article"] , dfdoctype["proceedings-article"], 
+    dfdoctype["book-chapter"], dfdoctype["posted-content"], dfdoctype["book"] )],
+    align='center', alpha = 1.0, color='grey', label="Autre")
+
+
+  # ____2____ configurer l'affichage
+  ax.spines['top'].set_visible(False)
+  ax.spines['right'].set_visible(False)
+  ax.spines['left'].set_visible(False)
+  # retirer l'origine sur Y
+  yticks = ax.yaxis.get_major_ticks()
+  yticks[0].label1.set_visible(False)
+
+  # tracer les grilles 
+  ax.yaxis.grid(ls='--', alpha=0.4)
+
+  # légende : reordonner les éléments
+  handles, labels = ax.get_legend_handles_labels()
+  print(labels)
+  order = [5, 4, 3, 2, 1, 0]
+  ax.legend([handles[idx] for idx in order], [labels[idx] for idx in order], 
+    fontsize = 14, loc="center", framealpha =0.95, frameon = True, borderaxespad =-1)
+
+  ax.set_xticks(np.arange(len(dfdoctype.index))) # just to remove an mess error UserWarning: FixedFormatter should only be used together with FixedLocator
+  ax.set_xticklabels([year[: year.index(".")] for year in dfdoctype.index.tolist()], fontsize = 15)
+
+  plt.title("Évolution des types de publication", fontsize = 25, x = 0.5, y = 1.05, alpha = 0.6)
+  plt.savefig('./img/doctype_evolution.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
+  plt.show()
+
+  exit()
+
 
 #====================disciplines=======================================
 # nb publications par discipline
-if graph == "disciplines" : 
-  print("graphique disciplines")
+if graph == "publication_discipline" : 
+  print("graphique nb publication par disciplines")
   oneyear = df[ df["published_year"] == "2020.0"]
 
-  scifield =pd.crosstab(oneyear["scientific_field"], oneyear["is_oa"])
-  scifield.columns = ["not_oa", "is_oa"]
-  scifield["total"] = scifield["not_oa"] + scifield["is_oa"]
- 
-  print(scifield)
+  df_field_oa =pd.crosstab(oneyear["scientific_field"], oneyear["is_oa"])
+  df_field_oa.columns = ["not_oa", "is_oa"]
+  df_field_oa["total"] = df_field_oa["not_oa"] + df_field_oa["is_oa"]
+
+  print("\n\n\n")
   
+  ### calculer taux_concentration par discipline
+  ## __ nettoyer les données de publisher
+  oneyear_clean_publisher = oneyear[ oneyear["publisher"] != ""].copy()
+  oneyear_clean_publisher["publisher"].replace({"Elsevier BV": "Elsevier"}, inplace = True)
+  oneyear_clean_publisher["publisher"].replace({"Springer Science and Business Media LLC": "Springer"}, inplace = True)
+  oneyear_clean_publisher["publisher"].replace({"Springer International Publishing": "Springer"}, inplace = True)
+
+
+  def calc_concentration(row) :
+    field_publications = pd.DataFrame()
+    field_publications = oneyear_clean_publisher[ oneyear_clean_publisher["scientific_field"] == row.name ]
+    
+    nb_publisher = len(field_publications["publisher"].value_counts() )
+    
+    #first_publisher_nb = nb publisher 1er centile
+    first_publisher_nb = math.ceil(nb_publisher/100) #1er centile : besoin d'arrondir en haut
+            
+    #first_pubsliher_nb_publication = nombre de publication pour le 1er centile des publisher
+    first_pubsliher_nb_publication = field_publications["publisher"].value_counts()[:first_publisher_nb].sum()
+    taux = round(first_pubsliher_nb_publication / row.total *100)
+
+    return [nb_publisher, first_publisher_nb, first_pubsliher_nb_publication, taux ]
+   
+  df_concentration = df_field_oa.apply(calc_concentration, axis = 1, result_type='expand')
+  df_concentration.columns = ["nb_publisher", "first_publisher_nb", "first_nb_publication", "taux_concentration"]
+  df_concentration.to_csv("vieww_df.csv")
+  #fusionner les deux df pour avoir les données d'accès ouvert, de quantité de publi et de concentration
+  df_field = df_field_oa.merge(df_concentration, how = "left", on = "scientific_field")
+    
   # ____1____ passer les données dans le modele de representation
   fig, (ax) = plt.subplots(figsize=(12, 7), dpi=100, facecolor='w', edgecolor='k')
 
-  ax.bar(scifield.index, scifield["is_oa"].tolist(),  color='#7E96C4', align='center',label="Accès ouvert")
+  ax.bar(df_field.index, df_field["is_oa"].tolist(),  color='#7E96C4', align='center',label="Accès ouvert")
 
-  ax.bar(scifield.index, scifield["not_oa"].tolist(), bottom = scifield["is_oa"].tolist(), align='center', color='#BED0F4', label="Accès fermé")
+  ax.bar(df_field.index, df_field["not_oa"].tolist(), bottom = df_field["is_oa"].tolist(), align='center', color='#BED0F4', label="Accès fermé")
 
   # ____2____ configurer l'affichage
   ax.spines['top'].set_visible(False)
@@ -50,12 +232,28 @@ if graph == "disciplines" :
   yticks = ax.yaxis.get_major_ticks()
   yticks[0].label1.set_visible(False)
   ax.yaxis.grid(ls='--', alpha=0.4)
+
+  ## ajout des taux de concentrations
+
+  for x, y in zip(df_field.index, df_field.total) : 
+    plt.annotate(
+      f"{df_field.loc[x, 'taux_concentration']} %" , 
+      (x,y),
+      textcoords="offset points", # how to position the text
+      xytext=(0,2), # distance from text to points (x,y)
+      ha='center', # horizontal alignment can be left, right or center
+      va = 'bottom', 
+      fontsize = 8,
+      color = "grey"
+      )
   
-  ax.set_xticklabels(scifield.index, ha = "right", rotation = 60, fontsize = 12)
+  ax.set_xticklabels(df_field.index, ha = "right", rotation = 60, fontsize = 12)
 
   #plt.tight_layout()
-  plt.legend( loc = "upper center", fontsize = 14,  borderaxespad =1.7)
-  plt.title("Nombre de publications de 2020 par discipline", fontsize = 20, x = 0.5, y = 1, alpha = 0.6)
+  plt.legend( loc = "upper left",  bbox_to_anchor=(0.14, 0.85),  fontsize = 14,  frameon = False)
+  plt.text(0.95, 5000 , "n % : taux de concentration\n         des éditeurs", fontsize = 12, color = "grey")
+
+  plt.title("Quantité de publication en 2020 par discipline\n et concentration éditoriale", fontsize = 20, x = 0.5, y = 1, alpha = 0.6)
   plt.savefig("img/publication_par_discipline.png", dpi=100, bbox_inches='tight')
   
   
@@ -161,7 +359,7 @@ if graph == "oa_evol" :
 
   # tracer les grilles 
   ax.yaxis.grid(ls='--', alpha=0.4)
-  import numpy as np
+
   ax.set_xticks(np.arange(len(dfoa["year_label"]))) # just to remove an mess error UserWarning: FixedFormatter should only be used together with FixedLocator
   ax.set_xticklabels(dfoa["year_label"].tolist(), fontsize = 15)
   ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1])
@@ -466,7 +664,6 @@ if graph == "apc_evol" :
 
   # tracer les grilles 
   ax.yaxis.grid(ls='--', alpha=0.4)
-  import numpy as np
   ax.set_xticks(np.arange(len(df_apc["label"]))) # just to remove an mess error UserWarning: FixedFormatter should only be used together with FixedLocator
   ax.set_xticklabels(df_apc["label"].tolist(), fontsize = 15)
   ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1])
@@ -487,6 +684,7 @@ if graph == "apc_evol" :
 
 
   plt.legend(loc='upper center', bbox_to_anchor=(0.5, 0.8) ,fontsize = 12)
+
 
   plt.title("Estimation du pourcentage de publications en accès ouvert \nchez l'éditeur avec frais de publications (APC)",
     fontsize = 25, x = 0.5, y = 1, alpha = 0.6)
@@ -632,7 +830,7 @@ if graph == "bibliodiversity" :
   #
 
   plt.legend( loc = "upper center",fontsize = 14, bbox_to_anchor=(0.5, 0.95),   borderaxespad =1.7)
-  plt.title("Répartition des 30 premiers éditeurs\npar nombre de publications pour l'année 2020", fontsize = 25, x = 0.5, y = 1.03, alpha = 0.6)
+  plt.title("Quantité de publication en 2020 \npour les 30 premiers éditeurs", fontsize = 25, x = 0.5, y = 1.03, alpha = 0.6)
   plt.suptitle(f"éditeurs = {nb_publisher}    publications = {nb_publications}", fontsize = 13, x = 0.5, y = 0.89,  alpha = 0.6)
   plt.savefig('./img/bibliodiversite.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
 

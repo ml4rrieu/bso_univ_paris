@@ -1,6 +1,6 @@
 # Baromètre Science Ouverte Université de Paris
 
-_2021-08-01 : en construction_
+_2021-09-01 : en construction_
 
 Le Baromètre de la science ouverte d'Université de Paris se base sur celui réalisé par l'université de la Lorraine en 2020 (voir code sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
 
@@ -26,7 +26,7 @@ La prise en compte des publications dans HAL sans DOI _baisse_ de quelques pourc
 
 ## Sur la détection des APC
 
-L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publications. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université de Paris : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](./apc_evol.png), l'autre sur [la quantité de publications avec APC par disciplines](./apc_disciplines.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc)
+L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publications. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université de Paris : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](./apc_evol.png), l'autre sur [la quantité de publications avec APC par disciplines](./apc_disciplines.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
 
 
 ## Notes de réalisation
@@ -40,20 +40,20 @@ L'heuristique sur les APC permet de savoir si une publication a recquis des frai
 2021-07-23 : envoi au MENESR des DOI sans domaines
 2021-07-24 : doc dans HAL avec fichier sous embargo non marqué OA
 2021-08-17 : génération des graphiques
-2021-08-24 : intégration des données du MENESR pour les DOI sans publications
+2021-08-24 : intégration des données du MENESR pour les DOI sans domaines
 2021-08-25 : réalisation dépôt github
 
 
 Statistiques - step_a 2021-07-24
 -------------------------
-Avant dédoublonnage 		 			187_499
-Apres dédoublonnage sur DOI			 	94_102
-Apres dédoublonnage DOI et (pour les sans DOI) sur titre 89_746
-doc total apres dedoublonnage 		 	89_746
-docs exclus (no doi no halId)  		 	69_87
-doc inclus (doi ou halId)	 		 	82_759
-pertinence (doi ou halId)%	 		 	92.2
-pertinence (doi only)%		 		 	81.2
+Avant dédoublonnage		187 499
+Apres dédoublonnage sur DOI		94 102
+Apres dédoublonnage DOI et (pour les sans DOI) sur titre 89 746
+doc total apres dedoublonnage		89 746
+docs exclus (no doi no halId)		6 987
+doc inclus (doi ou halId)			82 759
+pertinence (doi ou halId)%		92.2
+pertinence (doi only)%			81.2
 
 
 doc à traiter avec doi 		 72868
