@@ -7,5 +7,6 @@
 
 !data/out/step_d_complete.csv
 !data/match_referentials.json
+!data/wos_doi_titles.csv
 !/data/readme.md
 !/data/APC_tracking

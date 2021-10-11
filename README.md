@@ -1,8 +1,8 @@
 # Baromètre Science Ouverte Université de Paris
 
-_2021-09-01 : en construction_
+_2021-10-11 : en construction_
 
-Le Baromètre de la science ouverte d'Université de Paris se base sur celui réalisé par l'université de la Lorraine en 2020 (voir code sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). 
+Le Baromètre de la science ouverte d'Université de Paris se base sur celui réalisé par l'université de la Lorraine en 2020 (voir code sur [Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence de frais de publications (Article Processing Charges : APC). Les données du baromètre ont été récupérées en juillet 2021.
 
 <!-- ([Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
 -->
@@ -14,7 +14,6 @@ Le Baromètre de la science ouverte d'Université de Paris se base sur celui ré
 * [Schéma de données](#schéma-de-données) -- [Télécharger les données](/data/out/step_d_complete.csv)  
 
 
-<br />
 <br />
 <br />
 
@@ -39,19 +38,19 @@ L'heuristique sur les APC permet de savoir si une publication a recquis des frai
 2021-07-16 : métadonnées APC déduites (compter 2h)
 2021-07-23 : envoi au MENESR des DOI sans domaines
 2021-07-24 : doc dans HAL avec fichier sous embargo non marqué OA
-2021-08-17 : génération des graphiques
+2021-08-17 : production des graphiques
 2021-08-24 : intégration des données du MENESR pour les DOI sans domaines
 2021-08-25 : réalisation dépôt github
 
 
 Statistiques - step_a 2021-07-24
 -------------------------
-Avant dédoublonnage		187 499
-Apres dédoublonnage sur DOI		94 102
-Apres dédoublonnage DOI et (pour les sans DOI) sur titre 89 746
-doc total apres dedoublonnage		89 746
-docs exclus (no doi no halId)		6 987
-doc inclus (doi ou halId)			82 759
+Avant dédoublonnage		                                  187 499
+Apres dédoublonnage sur DOI		                         94 102
+Apres dédoublonnage DOI et (pour les sans DOI) sur titre  89 746
+doc total apres dedoublonnage		                         89 746
+docs exclus (no doi no halId)		                         6 987
+doc inclus (doi ou halId)			                         82 759
 pertinence (doi ou halId)%		92.2
 pertinence (doi only)%			81.2
 
@@ -62,15 +61,6 @@ doc à traiter sans doi 		 9891
 
 ```
 
-
-
-## Améliorations effectuées
-
-- `b_recuperer_data.py` la récupération des métadonnées dans HAL et Unpaywall se fait à l'aide d'un chariot permettant d'arrêter le processus sans perdre les métadonnées (nécessaire en cas d'erreur chez une API)
-
-- `d_aligner_data.py` ajout de l'option d'enrichissement des domaines via le MESRI
-
-- `d_aligner_data.py` un fichier dans HAL mais sous embargo n'est plus considéré comme de l'accès ouvert (métadonnée HAL `openAccess_bool`)
 
 
 ## Schéma de données
@@ -110,3 +100,14 @@ doc à traiter sans doi 		 9891
 | scientific_field   | Scientific field from barometre-science-ouverte and hal                                       | barometre-so, hal        |
 | is_oa              | Is there an OA copy of this ressource                                                         | hal, unpaywall           |
 | oa_type            | Publisher and/or repository                                                                   | hal, unpaywall           |
+
+
+## Améliorations effectuées
+
+Par rapport au [code réalisé en 2020 pour l'UVSQ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq)
+
+- `b_recuperer_data.py` la récupération des métadonnées dans HAL et Unpaywall se fait à l'aide d'un chariot permettant d'arrêter le processus sans perdre les métadonnées (nécessaire en cas d'erreur chez une API)
+
+- `d_aligner_data.py` ajout de l'option d'enrichissement des domaines via le MESRI
+
+- `d_aligner_data.py` un fichier dans HAL mais sous embargo n'est plus considéré comme de l'accès ouvert (métadonnée HAL `openAccess_bool`)

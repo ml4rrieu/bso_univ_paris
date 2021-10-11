@@ -1,4 +1,4 @@
-### Dans ce dossier placer
+### Dans ce dossier ajouter :
 
 * les données bibliographiques de votre institution : WOS, Scopus, LENS etc.
 
@@ -54,7 +54,8 @@ AF-ID("Université de Paris" 60123796) OR AF-ID("Institut de Physique du Globe d
 **WOS**
 
 limite du service : 5k depuis l'interface 
-_attention à la maj de 2021 où cette option n'est plus visible_
+
+_attention à la maj de 2021 où l'option 5k n'est plus disponible_ [tweet 2021-07-13](https://twitter.com/ml4rrieu/status/1414933875030122503)
 
 
 `
@@ -66,14 +67,15 @@ OG = (universite de paris)  NOT (OG = (universite de paris) AND AD = (CHU OR HOS
 
 **HAL**
 
-limites : 10k pour pages
-utiliser la  [pagination]()https://api.archives-ouvertes.fr/docs/search/?#paging pour extraire davantage
+limites : 10k par pages
+
+Utiliser la  pagination [voir doc](https://api.archives-ouvertes.fr/docs/search/?#paging) pour extraire davantage
 
 `https://api.archives-ouvertes.fr/search?&q=collCode_s:UNIV-PARIS&fq=publicationDateY_i:[2016 TO 2020]&fq=( (docType_s:(ART OR COMM) AND popularLevel_s:0 AND peerReviewing_s:1) OR (docType_s:(OUV OR COUV OR DOUV) AND popularLevel_s:0) OR (docType_s:UNDEFINED))&fl=doiId_s,title_s,halId_s&sort=doiId_s asc&rows=10000`
 
-ART ou COMM, exclure la vulgarisation et uniquement si peer review
+ART et COMM : exclure la vulgarisation et uniquement si peer review
 
-OUV ou COUV ou DOUV, si ce n'est pas de la vulgarisation
+OUV, COUV, DOUV : si ce n'est pas de la vulgarisation
 
 UNDEFINIED (inclusion des preprints !)
 
