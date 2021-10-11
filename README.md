@@ -45,20 +45,17 @@ L'heuristique sur les APC permet de savoir si une publication a recquis des frai
 
 Statistiques - step_a 2021-07-24
 -------------------------
-Avant dédoublonnage		                                  187 499
-Apres dédoublonnage sur DOI		                         94 102
+Avant dédoublonnage           187 499
+Apres dédoublonnage sur DOI	94 102
 Apres dédoublonnage DOI et (pour les sans DOI) sur titre  89 746
-doc total apres dedoublonnage		                         89 746
 docs exclus (no doi no halId)		                         6 987
 doc inclus (doi ou halId)			                         82 759
+
 pertinence (doi ou halId)%		92.2
 pertinence (doi only)%			81.2
 
-
 doc à traiter avec doi 		 72868
 doc à traiter sans doi 		 9891
-
-
 ```
 
 
