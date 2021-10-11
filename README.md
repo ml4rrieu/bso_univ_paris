@@ -48,8 +48,8 @@ Statistiques - step_a 2021-07-24
 Avant dédoublonnage           187 499
 Apres dédoublonnage sur DOI	94 102
 Apres dédoublonnage DOI et (pour les sans DOI) sur titre  89 746
-docs exclus (no doi no halId)		                         6 987
-doc inclus (doi ou halId)			                         82 759
+docs exclus (no doi no halId)             6 987
+doc inclus (doi ou halId)                 82 759
 
 pertinence (doi ou halId)%		92.2
 pertinence (doi only)%			81.2
