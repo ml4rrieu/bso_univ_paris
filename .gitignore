@@ -1,6 +1,6 @@
 
 /misc
-/img
+/img/*
 /data/*
 /data/APC_tracking/*
 /data/out/*
@@ -10,3 +10,6 @@
 !data/wos_doi_titles.csv
 !/data/readme.md
 !/data/APC_tracking
+!img/oa_evolution.png
+!img/oa_discipline.png
+!img/oa_editeur.png
