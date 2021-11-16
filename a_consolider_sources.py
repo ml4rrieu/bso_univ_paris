@@ -86,6 +86,7 @@ def removeJoinDois(x):
 		return x
 
 lens["doi"] = lens["doi"].apply(lambda x : removeJoinDois(x))
+
 extract_stats_from_base("lens", lens)
 
 
@@ -93,7 +94,7 @@ extract_stats_from_base("lens", lens)
 rawdf = pd.concat([wos, scopus, hal, pubmed, lens]) 
 # trie des documents par DOI puis par halId 
 rawdf.sort_values(by=['doi', 'halId'], inplace = True)
-print("\n\nAvant dédoublonnage nb publi", len(rawdf[ rawdf['doi'].notna()]) )
+print("\n\nAvant dédoublonnage nb items", len(rawdf[ rawdf['doi'].notna()]) )
 
 # __a Dedoublonnage sur les DOI
 # retirer les docs dont le DOI est en double (et conserver les docs sans DOI)
@@ -102,17 +103,24 @@ clean_doi = rawdf[ (~rawdf['doi'].duplicated()) | (rawdf['doi'].isna()) ].copy()
 print('Apres dédoublonnage sur DOI, nb publi', len(clean_doi.index))
 
 
-# __b dedoublonnage sur les titres normés
+## parenthèse pour estimer l'efficacité du dédoublonnage sur titre uniquement
+"""clean_doi["titre_double"] = clean_doi["title_norm"].duplicated()
+clean_doi.to_csv("publication_doi_titre__verif_dedoublonnage.csv", index= False)
+"""
+
+
+# __b pour les sans DOI, dedoublonnage sur les titres normés
 #sélectionner les documents  avec DOI, et ceux sans DOI dont les titres ne sont pas des doublons
 mask = (clean_doi['doi'].notna()) | ( (clean_doi['doi'].isna()) & (~clean_doi['title_norm'].duplicated()) )
 clean_doi_title = clean_doi[mask].copy()
 print("Apres dédoublonnage DOI et (pour les sans DOI) sur titre , nb publi", len(clean_doi_title.index))
 
-# Enfin conserver uniquement les publis  avec DOI ou idHAL
+# __c conserver uniquement les publis  avec DOI ou idHAL
 #commentaire : on pourrait retirer avant les docs sans DOI
 final = clean_doi_title[ (clean_doi_title['doi'].notna()) | (clean_doi_title['halId'].notna()) ].copy()
 
 
+#___2___imprimer et exporter stats 
 toprint = {
 "\n\ndoc total apres dedoublonnage" : len(clean_doi_title),
 'docs exclus (no doi no halId) ' : len( clean_doi_title[  (clean_doi_title['doi'].isna()) & (clean_doi_title['halId'].isna()) ] ),

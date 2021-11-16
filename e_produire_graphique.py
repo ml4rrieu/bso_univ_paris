@@ -7,6 +7,9 @@ import numpy as np, math
   oa_evol : evolution taux open access par an et type oa
   oa_discipline : type d'accès ouvert par discipline
   oa_editeur : type d'accès ouvert par éditeurs
+  publication_discipline : n
+  doctype_discipline : doctype par discipline
+  doctype_evol : doctype évolution par années
 
   evol types d'accès ouvert green to diamond 
 """
@@ -18,10 +21,211 @@ df_raw = pd.read_csv("./data/out/step_d_complete.csv", dtype={"published_year":"
 df = df_raw[df_raw["is_paratext"] == ""]
 # rmq:  des publications ne sont pas dans la fourchette souhaitée [2016-2020]
 
+# les noms des graphiques possibles : 
 # circulaire // oa_evol // oa_discipline // oa_editeur // 
 # comparaison_bases // apc_evol // apc_discipline // bibliodiversity
 # publication_discipline // doctype_evol
-graph = "publication_discipline" 
+# hal_evol // hal_discipline
+graph = "hal_discipline" 
+
+
+#====================hal_discipline=======================================
+def deduce_hal_presence(row) :
+    """deduction du type de présence dans HAL : autoarchive, fichier non déposé par l'auteur, notice etc. """
+    if row["hal_location"] == "file" and row["hal_selfArchiving"] == "True" : 
+        return "hal_file_auto"
+
+    if row["hal_location"] == "file" and row["hal_selfArchiving"] == "False" : 
+        return "hal_file_no_auto"
+
+    if (row["hal_coverage"] == "in" and row["hal_location"] != "file") and row["is_oa"] : 
+        return "hal_notice_oa"
+
+    if (row["hal_coverage"] == "in" and row["hal_location"] != "file") and not row["is_oa"] :
+        return "hal_notice_not_oa"
+
+    if row["hal_coverage"] == "missing" : 
+        return "not_in_hal"
+
+
+if graph == "hal_discipline" :
+    print("graphique hal disicpline\n\n")
+    oneyear_pub = df.loc[df['published_year'] == "2020.0",:]
+
+    print("2020 nb of publi", len(oneyear_pub))
+    
+    # genere une SettingWithCopyWarning why  ? 
+    oneyear_pub["hal_presence"] = oneyear_pub.apply(lambda row : deduce_hal_presence(row), axis = 1)
+
+    print(oneyear_pub["hal_presence"].value_counts())
+
+    df_hal_field = pd.crosstab([oneyear_pub['scientific_field']] , oneyear_pub['hal_presence'])
+    # rearengement des colonnes
+    df_hal_field = df_hal_field[["hal_file_auto", "hal_file_no_auto", "hal_notice_oa", "hal_notice_not_oa", "not_in_hal"]]
+    df_hal_field = (df_hal_field.T / df_hal_field.T.sum()).mul(100).round(1)
+    df_hal_field = df_hal_field.T
+
+    df_hal_field.sort_index( ascending = False, inplace = True)
+
+    #import matplotlib.ticker as mtick
+    ax = df_hal_field.plot(kind="barh", stacked=True, figsize=(14, 10),
+        color=['#7e96c4','#8ba6e9','#bed0f4','#e5eaf3', '#f4f6fa']) 
+
+    ## _______ configurer l'afichage
+    # remove axis
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    # remove xticks
+    plt.tick_params(
+        axis = 'x',          # changes apply to the x-axis
+        which = 'both',      # both major and minor ticks are affected
+        bottom = False,      # ticks along the bottom edge are off
+        labelbottom = False) # labels along the bottom edge are off
+
+    labels = []
+    for j in df_hal_field.columns:
+        for i in df_hal_field.index:
+            label = df_hal_field.loc[i][j]
+            if type(label) != str : 
+                #pour un meilleur affichage : si ce n'est pas la discipline on arrondi 
+                label = str(round(label))
+                label += " %"     #:label.find(".")
+                #if j != "not_in_hal" : # on ne met pas de label pour les "not_int_hal"
+                labels.append(label)
+
+    patches = ax.patches
+    for label, rect in zip(labels, patches):
+        width = rect.get_width()
+        if width > 0 :
+            x = rect.get_x()
+            y = rect.get_y()
+            height = rect.get_height()
+            ax.text(x + width/2., y + height/2., label, ha='center', va='center', fontsize=9)
+
+    plt.tick_params(axis = 'both', labelsize = 13)
+    plt.ylabel(None, fontsize = 15)
+    
+    """
+    plt.legend(
+    ["Dans HAL avec fichier déposé par l'auteur", "Dans HAL avec fichier non déposé par l'auteur", "Dans HAL avec accès ouvert à l'extérieur", 'Dans HAL sans accès ouvert'],
+                loc = 'upper right', ncol = 1,
+                markerscale = 1, title = None, fontsize = 11,
+                borderpad = 0.3, labelspacing = 0.3, framealpha= True, bbox_to_anchor=(1, 0.95))
+    """
+    plt.legend(
+    ["Dans HAL avec texte intégral (déposé par l'auteur)", "Dans HAL avec texte intégral (non déposé par l'auteur)", "Dans HAL avec texte intégral en hyperlien",
+     'Dans HAL sans texte intégral', 'Non présent dans HAL'],
+                loc = 'upper center', ncol = 2, frameon=False,
+                markerscale = 1, title = None, fontsize = 11,
+                borderpad = 0.3, labelspacing = 0.3, framealpha= True , bbox_to_anchor=(0.4, 1.09))
+    
+    #plt.title("Types de présence dans HAL des publications de 2020 par discipline", fontsize = 22, x = 0.49, y = 1.03,  alpha = 0.6)
+    plt.title("Types de présence dans HAL des publications de 2020 par discipline", fontsize = 22, x = 0.4, y = 1.08,  alpha = 0.6)
+    plt.savefig('./img/hal_discipline.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
+
+
+
+#====================hal_evol=======================================
+# hal fichier avec auto archiv 
+# hal fichier not auto archive
+# hal notice avec oa
+# hal notice sans oa
+ 
+# evolution de la présence dans HAL
+if graph == "hal_evol" : 
+    print("graphique hal_evol\n\n")
+    dfyears = df.loc[ df["published_year"].isin(["2016.0", "2017.0", "2018.0", "2019.0", "2020.0"]), :].copy()
+    
+    #deduire type dans hal
+    dfyears["hal_file_auto"] = np.where( (dfyears["hal_location"] == "file") & (dfyears["hal_selfArchiving"] == "True"), True, False)
+    dfyears["hal_file_no_auto"] = np.where( (dfyears["hal_location"] == "file") & (dfyears["hal_selfArchiving"] == "False"), True, False)
+    dfyears["hal_notice_oa"] = np.where( (dfyears["hal_coverage"] == "in") & (dfyears["hal_location"] != "file") & (dfyears["is_oa"] == True), True, False)
+    dfyears["hal_notice_not_oa"] = np.where( (dfyears["hal_coverage"] == "in") & (dfyears["hal_location"] != "file") & (dfyears["is_oa"] == False), True, False)
+    
+
+    #definition du taux AO par années
+    dfhal = pd.DataFrame(dfyears.groupby(["published_year"])
+    [["hal_file_auto", "hal_file_no_auto", "hal_notice_oa", "hal_notice_not_oa"]].agg(
+      ["count", np.mean])).reset_index()
+
+    dfhal.columns = ["published_year", "nb_publi", "hal_file_auto_mean", "nb_publi", "hal_file_no_auto_mean", "nb_publi", "hal_notice_oa_mean", "nb_publi", "hal_notice_not_oa_mean"]
+
+    # retrait du . dans le string des années
+    dfhal["published_year"] = dfhal.apply(
+        lambda x: x.published_year[ : x.published_year.index(".")], axis = 1)
+
+    # ____1____ passer les données dans le modele de representation
+    fig, (ax) = plt.subplots(figsize=(15, 10), dpi=100, facecolor='w', edgecolor='k')
+
+    ax.bar(dfhal.published_year, dfhal.hal_file_auto_mean.tolist() , align='center', alpha = 1.0, color='#7e96c4',
+          ecolor='black', label="Dans HAL avec texte intégral (déposé par l'auteur)")
+
+    ax.bar(dfhal.published_year, dfhal.hal_file_no_auto_mean.tolist(), align='center', alpha = 1.0, color='#8ba6e9',
+          bottom = dfhal.hal_file_auto_mean.tolist(),
+          ecolor='black', label="Dans HAL avec texte intégral (non déposé par l'auteur)")
+
+    ax.bar(dfhal.published_year, dfhal.hal_notice_oa_mean.tolist() , align='center',alpha = 1.0, color='#bed0f4',
+         bottom = [sum(x) for x in zip(dfhal.hal_file_auto_mean.tolist(), dfhal.hal_file_no_auto_mean.tolist())], 
+         ecolor='black', label="Dans HAL avec texte intégral en hyperlien")
+
+    ax.bar(dfhal.published_year, dfhal.hal_notice_not_oa_mean.tolist() , align='center',alpha = 1.0, color='#e5eaf3',
+         bottom = [sum(x) for x in zip(dfhal.hal_file_auto_mean.tolist(), dfhal.hal_file_no_auto_mean.tolist(), dfhal.hal_notice_oa_mean.tolist())], 
+         ecolor='black', label="Dans HAL sans texte intégral")
+
+
+    # ____2____ configurer l'affichage
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    # retirer l'origine sur Y
+    yticks = ax.yaxis.get_major_ticks()
+    yticks[0].label1.set_visible(False)
+
+    # tracer les grilles 
+    ax.yaxis.grid(ls='--', alpha=0.4)
+
+    ax.set_xticks(np.arange(len(dfhal["published_year"]))) # just to remove an mess error UserWarning: FixedFormatter should only be used together with FixedLocator
+    ax.set_xticklabels(dfhal["published_year"].tolist(), fontsize = 15)
+    ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()], fontsize = 10)
+    # reordonner la legende pour avoir en haut l'éditeur
+    handles, labels = ax.get_legend_handles_labels()
+    order = [3, 2, 1, 0]
+    ax.legend([handles[idx] for idx in order],[labels[idx] for idx in order], fontsize = 15, loc="upper center", borderaxespad =1.7)
+
+    
+    hal_total = [sum(x) for x in zip(dfhal.hal_file_auto_mean.tolist(), dfhal.hal_file_no_auto_mean.tolist(), dfhal.hal_notice_oa_mean.tolist(), dfhal.hal_notice_not_oa_mean.tolist())]
+
+    #ajout taux de présence global
+    for year_ix in range(len(dfhal.published_year)): 
+        ax.annotate(f"{ round(hal_total[year_ix] * 100)} %", 
+                          xy=(year_ix , hal_total[year_ix]),
+                          xytext=(0, 10),  
+                          size=9,
+                          textcoords="offset points",
+                          ha='center', va='bottom', color = "#555555")
+    '''
+    ## Ajouter les taux par type, difficulté : il faut prendre en compte les taux précédents
+    colname = ["oa_repository_mean", "oa_publisher_repository_mean", "oa_publisher_mean"]
+    for col in  colname : 
+    for year_ix in range(len(dfoa.year_label)) : 
+
+      ypos_bottom = 0 
+      for col_before_ix in range(colname.index(col)) :
+        col_before = colname[col_before_ix]
+        ypos_bottom += dfoa[col_before][year_ix]
+
+      ax.annotate( f"{int(round( dfoa[col][year_ix] * 100 ))} %",
+        xy = (year_ix, ypos_bottom + dfoa[col][year_ix] * 0.40), 
+        xytext= (0,0), 
+        size = 8, 
+        textcoords="offset points",
+        ha='center', va='bottom', color = "black")
+        '''
+
+    plt.title("Évolution et types de présence dans HAL", fontsize = 25, x = 0.5, y = 1.05, alpha = 0.6)
+    plt.savefig('./img/hal_evol.png', dpi=100, bbox_inches='tight', pad_inches=0.1)
 
 
 #====================doctype_discipline=======================================
@@ -74,8 +278,7 @@ if graph == "doctype_discipline" :
             #pour un meilleur affichage : si ce n'est pas la discipline on arrondi 
             label = str(round(label))
             label += " %"     #:label.find(".")
-            labels.append(label)
-          
+            labels.append(label)          
 
   patches = ax.patches
   for label, rect in zip(labels, patches):
@@ -86,13 +289,11 @@ if graph == "doctype_discipline" :
           height = rect.get_height()
           ax.text(x + width/2., y + height/2., label, ha='center', va='center', fontsize=8)
 
-  
   plt.ylabel(None, fontsize = 15)
   plt.legend(["Ouvrage", "Chapitre d'ouvrage", "Article de revue", "Autre", "Preprint", "Article de conférence"], 
     frameon = True, markerscale = 1, loc = "center", ncol = 3, bbox_to_anchor=(0.5, 1.02), framealpha= False  )
   plt.title("Types de publications de 2020 par discipline", fontsize = 25, x = 0.49, y = 1.07,  alpha = 0.6)
   plt.savefig("img/doctype_par_discipline.png", dpi=100, bbox_inches='tight')
-
 
 
 #====================doctype_evol=======================================
