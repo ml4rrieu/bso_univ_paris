@@ -6,7 +6,7 @@ Les données du présent baromètre ont été récupérées en juillet 2021.
 <!-- ([Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
 -->
 
-![](/img/oa_evolution.png)
+![](/img/bibliodiversite.png)
 
 <br />
 <br />
