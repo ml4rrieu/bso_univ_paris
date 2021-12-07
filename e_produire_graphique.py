@@ -19,14 +19,92 @@ df_raw = pd.read_csv("./data/out/step_d_complete.csv", dtype={"published_year":"
 
 # filtre : retrait des documents de paratexte
 df = df_raw[df_raw["is_paratext"] == ""]
-# rmq:  des publications ne sont pas dans la fourchette souhaitée [2016-2020]
+# nb:  des publications ne sont pas dans la fourchette souhaitée [2016-2020]
 
 # les noms des graphiques possibles : 
 # circulaire // oa_evol // oa_discipline // oa_editeur // 
 # comparaison_bases // apc_evol // apc_discipline // bibliodiversity
 # publication_discipline // doctype_evol
 # hal_evol // hal_discipline
-graph = "hal_discipline" 
+graph = "bibliodiversity_discipline"
+
+
+#====================bibliodiversity_discipline=======================================
+# pour éclairer la bibiodiversité pour une.des disciplines en particulier
+# attention pb affichage pour phrase bibliodiversité :  plt.text
+if graph == "bibliodiversity_discipline" : 
+  sel_discipline = ["Medical research"]
+  year = "2020.0"
+  print("graphique bibliodiversity")
+
+  oneyear = df[ (df["published_year"] == year) & (df["publisher"] != "") & (df["scientific_field"].isin(sel_discipline))].copy()
+  print(oneyear["scientific_field"].value_counts())
+  
+  #fusionner les éditeurs au mm nom
+  oneyear["publisher"].replace({"Elsevier BV": "Elsevier"}, inplace = True)
+  oneyear["publisher"].replace({"Springer Science and Business Media LLC": "Springer"}, inplace = True)
+  oneyear["publisher"].replace({"Springer International Publishing": "Springer"}, inplace = True)
+  oneyear["publisher"].replace({"Editions Dalloz": "Dalloz"}, inplace = True)
+  #print(oneyear["publisher"].value_counts())
+    
+  bibdiversity = pd.crosstab(oneyear["publisher"], oneyear["is_oa"])
+  bibdiversity["total"] = bibdiversity[False] + bibdiversity[True]
+  # renomer les colonnes
+  bibdiversity.columns = ["not_oa", "is_oa", "total"]
+  bibdiversity.sort_values(by = "total", ascending = False, inplace = True)
+
+  ### données pour la phrase "n publisher publient 50 % des publications d'UP"
+  nb_publisher = len(bibdiversity)
+  nb_publications = bibdiversity["total"].sum()
+  one_percent = round(nb_publisher/100)
+  print("1 % des éditeurs = ", one_percent, "publishers")
+  one_percent_total = bibdiversity["total"].iloc[0 : one_percent].sum()
+  one_percent_total_percent = round(one_percent_total/ nb_publications * 100) 
+  string4graph = f"1 % des éditeurs publient\n{one_percent_total_percent} % des publications"
+  print(string4graph)
+
+  ## __x__generer graphique
+  df4graph = bibdiversity[:30]
+
+  fig, (ax) = plt.subplots(figsize=(15, 10), dpi=100, facecolor='w', edgecolor='k')
+  ax.bar(df4graph.index, df4graph.is_oa, color = "#7E96C4", label = "Accès ouvert")
+  ax.bar(df4graph.index, df4graph.not_oa, bottom = df4graph.is_oa , color = "#BED0F4", label = "Accès fermé")
+
+  # ajout des noms des publishers en haut des histogrammes
+  for x, y in zip(df4graph.index, df4graph.total) : 
+    plt.annotate(
+      x, 
+      (x,y),
+      textcoords="offset points", # how to position the text
+      xytext=(0,2), # distance from text to points (x,y)
+      ha='left', # horizontal alignment can be left, right or center
+      va = 'bottom', 
+      rotation= 30, 
+      fontsize = 9
+      )
+    
+  # ____2____ configurer l'affichage
+  ax.spines['top'].set_visible(False)
+  ax.spines['right'].set_visible(False)
+  ax.set_ylabel("Nombre de publications", labelpad = 10)
+  ax.set_xlabel("Éditeurs", labelpad = 10)
+
+  # remove xticks
+  plt.tick_params(
+    axis='x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom=False,      # ticks along the bottom edge are off
+    top=False,         # ticks along the top edge are off
+    labelbottom=False) # labels along the bottom edge are off
+  
+  # punchline
+  plt.text(19, 2000 , string4graph, fontsize = 19)
+  
+
+  plt.legend( loc = "upper center",fontsize = 14, bbox_to_anchor=(0.5, 0.95),   borderaxespad =1.7)
+  plt.title(f"Quantité de publication par éditeurs en {sel_discipline} {year[:year.index('.')]}", fontsize = 25, x = 0.5, y = 1.03, alpha = 0.6)
+  plt.suptitle(f"éditeurs = {nb_publisher}  publications = {nb_publications}", fontsize = 13, x = 0.5, y = 0.89,  alpha = 0.6)
+  plt.savefig(f'./img/bibliodiversity_{sel_discipline}.png', dpi=100, bbox_inches='tight' , pad_inches=0.1)
 
 
 #====================hal_discipline=======================================
@@ -256,7 +334,11 @@ if graph == "doctype_discipline" :
   fields.sort_index(ascending = False, inplace = True)
   
   print(fields.columns)
-  ax = fields.plot(kind = "barh", stacked=True, figsize=(14, 10), color = ["#9dd866", "#6f4e7c", "#0b84a5", "grey", "#ffa056", "#f6c85f"])
+  ax = fields.plot(kind = "barh", 
+    stacked=True, 
+    figsize=(14, 10),
+     color = ["#9dd866", "#6f4e7c", "#0b84a5", "grey", "#ffa056", "#f6c85f"]
+     )
   
   ## _______ configurer l'afichage
   # remove axis
@@ -378,43 +460,50 @@ if graph == "doctype_evol" :
 
 
 #====================disciplines=======================================
-# nb publications par discipline
+# nb publications par disciplines & taux de concentration
+## attention le calcul de la bibliodiversité nest pas le mm que celui global bibliodiversity
+## ici les publishers = "" sont inclus dans le denominateur, contraitement à bibliodiversity où il sont exclus
 if graph == "publication_discipline" : 
   print("graphique nb publication par disciplines")
-  oneyear = df[ df["published_year"] == "2020.0"]
+  oneyear = df[ (df["published_year"] == "2020.0") ]
 
-  df_field_oa =pd.crosstab(oneyear["scientific_field"], oneyear["is_oa"])
+  df_field_oa = pd.crosstab(oneyear["scientific_field"], oneyear["is_oa"])
   df_field_oa.columns = ["not_oa", "is_oa"]
   df_field_oa["total"] = df_field_oa["not_oa"] + df_field_oa["is_oa"]
 
-  print("\n\n\n")
-  
   ### calculer taux_concentration par discipline
   ## __ nettoyer les données de publisher
   oneyear_clean_publisher = oneyear[ oneyear["publisher"] != ""].copy()
   oneyear_clean_publisher["publisher"].replace({"Elsevier BV": "Elsevier"}, inplace = True)
   oneyear_clean_publisher["publisher"].replace({"Springer Science and Business Media LLC": "Springer"}, inplace = True)
   oneyear_clean_publisher["publisher"].replace({"Springer International Publishing": "Springer"}, inplace = True)
-
+  oneyear_clean_publisher["publisher"].replace({"Editions Dalloz": "Dalloz"}, inplace = True)
 
   def calc_concentration(row) :
+    """ pb avec les autres graphs de bibliodiversité car ici on divise par toutes les publications
+    alors que précédemment on retire les publications où l'on a pas de publisher
+    """
+    #ceer une df avec les publications du domaine
     field_publications = pd.DataFrame()
     field_publications = oneyear_clean_publisher[ oneyear_clean_publisher["scientific_field"] == row.name ]
     
+    # calculer nombre publisher total
     nb_publisher = len(field_publications["publisher"].value_counts() )
     
-    #first_publisher_nb = nb publisher 1er centile
-    first_publisher_nb = math.ceil(nb_publisher/100) #1er centile : besoin d'arrondir en haut
+    #first_publisher_nb = nb publisher 1er percentile
+    first_publisher_nb = math.ceil(nb_publisher/100) # 1er percentile : besoin d'arrondir en haut
             
     #first_pubsliher_nb_publication = nombre de publication pour le 1er centile des publisher
     first_pubsliher_nb_publication = field_publications["publisher"].value_counts()[:first_publisher_nb].sum()
     taux = round(first_pubsliher_nb_publication / row.total *100)
+    print(row.name, row.total)
 
     return [nb_publisher, first_publisher_nb, first_pubsliher_nb_publication, taux ]
    
   df_concentration = df_field_oa.apply(calc_concentration, axis = 1, result_type='expand')
+
   df_concentration.columns = ["nb_publisher", "first_publisher_nb", "first_nb_publication", "taux_concentration"]
-  df_concentration.to_csv("vieww_df.csv")
+
   #fusionner les deux df pour avoir les données d'accès ouvert, de quantité de publi et de concentration
   df_field = df_field_oa.merge(df_concentration, how = "left", on = "scientific_field")
     
@@ -455,7 +544,7 @@ if graph == "publication_discipline" :
   plt.text(0.95, 5000 , "n % : taux de concentration\n         des éditeurs", fontsize = 12, color = "grey")
 
   plt.title("Quantité de publication en 2020 par discipline\n et concentration éditoriale", fontsize = 20, x = 0.5, y = 1, alpha = 0.6)
-  plt.savefig("img/publication_par_discipline.png", dpi=100, bbox_inches='tight')
+  plt.savefig("img/publication_par_discipline000.png", dpi=100, bbox_inches='tight')
   
   
 
@@ -931,7 +1020,7 @@ if graph == "apc_discipline" :
       bottom=False,      # ticks along the bottom edge are off
       labelbottom=False) # labels along the bottom edge are off
 
-  #ajout des pourcentages
+  # ajout des pourcentages
   labels = []
   for j in df_apc_discipline.columns:
       for i in df_apc_discipline.index:
@@ -966,21 +1055,24 @@ if graph == "apc_discipline" :
 
 #====================bibliodiversity=======================================
 # pour éclairer la bibiodiversité
+# pb pas le mm calcul comparé a la biblio par domaines, car ici on divise sans intégrer les publisher "", contraitement aux autres graphs
+# avoir le nb de publi par discipline sans le publisher ""
 if graph == "bibliodiversity" : 
   print("graphique bibliodiversity")
   oneyear = df[ (df["published_year"] == "2020.0") & (df["publisher"]!= "") ].copy()
+
   #fusionner les éditeurs au mm nom
   oneyear["publisher"].replace({"Elsevier BV": "Elsevier"}, inplace = True)
   oneyear["publisher"].replace({"Springer Science and Business Media LLC": "Springer"}, inplace = True)
   oneyear["publisher"].replace({"Springer International Publishing": "Springer"}, inplace = True)
-  #print(oneyear["publisher"].value_counts())
-
   
+  # croisement publisher is_oa
   bibdiversity = pd.crosstab(oneyear["publisher"], oneyear["is_oa"])
   bibdiversity["total"] = bibdiversity[False] + bibdiversity[True]
   # renomer les colonnes
   bibdiversity.columns = ["not_oa", "is_oa", "total"]
   bibdiversity.sort_values(by = "total", ascending = False, inplace = True)
+
 
   ### données pour la phrase "n publisher publient 50 % des publications d'UP"
   nb_publisher = len(bibdiversity)
@@ -991,6 +1083,7 @@ if graph == "bibliodiversity" :
   one_percent_total_percent = round(one_percent_total/ nb_publications * 100) 
   string4graph = f"1 % des éditeurs publient\n{one_percent_total_percent} % des publications d'Université de Paris\n≠ bibliodiversité"
   print(string4graph)
+
 
   ## __x__generer graphique
   df4graph = bibdiversity[:30]

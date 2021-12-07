@@ -2,7 +2,9 @@ import json, pandas as pd
 
 
 def track_apc(doi, row) :
-	"""Heuristique sur les APC""" 
+	"""Heuristique sur les APC
+    peut être acccéléré en traitant uniquement les publis en OA chez l'éditeur
+    """ 
 	
 	#__a Vérifier si le DOI est dans openapc
 	if doi and openapc_dois["doi"].str.contains(doi, regex = False).any() :
@@ -85,7 +87,6 @@ openapc_journals = pd.read_csv("./data/apc_tracking/openapc_journals.csv", na_fi
 doaj_apc_journals = pd.read_csv("./data/apc_tracking/doaj_apc_journals.csv", na_filter= False)
 fhjson = open('./data/suspiciousIssns.json') 
 suspiciousIssns = json.load(fhjson)
-
 
 df = pd.read_csv("./data/out/step_b_biblio_md.csv", converters={'doi' : str}, na_filter= False )
 
