@@ -7,7 +7,7 @@ message: Please cite this software using these metadata.
 type: software
 authors:
   - family-names: LARRIEU
-  - given-names: Maxence
+    given-names: Maxence
     affiliation: Université de Paris
     orcid: 'https://orcid.org/0000-0002-1834-3007'
 repository-code: 'https://github.com/ml4rrieu/bso_univ_paris'
