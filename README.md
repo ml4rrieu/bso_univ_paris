@@ -14,12 +14,12 @@ Les données du présent baromètre ont été récupérées en juillet 2021.
 
 ## Sur l'intégration des publications sans DOI
 
-La prise en compte des publications dans HAL sans DOI _baisse_ de quelques pourcentages (1-5 %) le taux d'accès ouvert. Comparer les graphiques [oa_evolution.png](/img//oa_evolution.png) et [oa_evolution__doi_only.png](/img/oa_evolution__doi_only.png).
+La prise en compte des publications dans HAL sans DOI _baisse_ de quelques pourcentages (1-5 %) le taux d'accès ouvert. Comparer les graphiques [oa_evolution.png](/img/oa_evolution.png) et [oa_evolution__doi_only.png](/img/oa_evolution__doi_only.png).
 
 
 ## Sur la détection des APC
 
-L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publications. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université de Paris : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](/img/apc_evol.png), l'autre sur [la quantité de publications avec APC par disciplines](/img/apc_disciplines.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
+L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publications. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université de Paris : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](/img/apc_evolution.png), l'autre sur [la quantité de publications avec APC par disciplines](/img/apc_disciplines.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
 
 
 ## Données récoltées
