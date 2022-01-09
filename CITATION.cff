@@ -1,0 +1,46 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Baromètre Science Ouverte Université de Paris
+message: Please cite this software using these metadata.
+type: software
+authors:
+  - given-names: Maxence Larrieu
+    affiliation: Université de Paris
+    orcid: 'https://orcid.org/0000-0002-1834-3007'
+repository-code: 'https://github.com/ml4rrieu/bso_univ_paris'
+abstract: >
+
+
+  Le Ministère de l’Enseignement Supérieur, de la
+  Recherche et de l’Innovation (MESRI) réalise depuis
+  2019 le Baromètre Français de la Science Ouverte,
+  lequel rend compte de l’évolution de l’accès ouvert
+  des publications scientifiques en France. Dans une
+  logique de transparence et de réutilisation le
+  baromètre français met également à disposition le
+  code et les données produites. En 2020 l’université
+  de Lorraine a adapté cette méthode afin de réaliser
+  un baromètre à échelle locale.
+
+
+  L’université rejoint l’initiative et présente le
+  Baromètre de la Science ouverte d’Université de
+  Paris. Le périmètre est celui des publications de
+  la période de 2016 à 2020 émanant des unités de
+  recherche de l’université. Les données
+  bibliographiques ont été récoltées en croisant les
+  principales bases : WOS, Scopus, LENS, HAL et
+  Pubmed ; les données sur l’accès ouvert ont été
+  obtenues avec HAL et Unpaywall. Dans une logique de
+  représentativité les publications sans DOI
+  présentes dans HAL ont été intégrées. La méthode,
+  le code et les données sont partagées sur la
+  plateforme Github. Les données du baromètre ont été
+  obtenues durant le mois de juillet 2021.
+keywords:
+  - open access
+  - open access monitoring
+license: AGPL-3.0
+date-released: '2021-09-01'
