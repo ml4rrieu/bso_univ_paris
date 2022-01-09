@@ -6,7 +6,8 @@ title: Baromètre Science Ouverte Université de Paris
 message: Please cite this software using these metadata.
 type: software
 authors:
-  - given-names: Maxence Larrieu
+  - family-names: LARRIEU
+  - given-names: Maxence
     affiliation: Université de Paris
     orcid: 'https://orcid.org/0000-0002-1834-3007'
 repository-code: 'https://github.com/ml4rrieu/bso_univ_paris'
