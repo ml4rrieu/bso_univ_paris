@@ -1,7 +1,7 @@
 # Baromètre Science Ouverte Université de Paris
 
 Ce baromètre reprend le code réalisé par l'université de Lorraine en 2020 ([gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence des frais de publications (Article Processing Charges : APC). 
-Les données du présent baromètre ont été récupérées en juillet 2021 : voir les graphiques sur le site de l'université [u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/
+Les données du présent baromètre ont été récupérées en juillet 2021 : voir les graphiques sur le site de l'université [u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
 
 
 ![](/img/bibliodiversite.png)
