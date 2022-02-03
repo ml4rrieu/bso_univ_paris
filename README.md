@@ -1,10 +1,8 @@
 # Baromètre Science Ouverte Université de Paris
 
-Ce baromètre se base sur celui réalisé par l'université de Lorraine en 2020 ([code sur Gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence des frais de publications (Article Processing Charges : APC). 
-Les données du présent baromètre ont été récupérées en juillet 2021.
+Ce baromètre reprend le code réalisé par l'université de Lorraine en 2020 ([gitlab](https://gitlab.com/Cthulhus_Queen/barometre_scienceouverte_universitedelorraine/-/tree/master)). Deux éléments clés ont été ajoutés : la prise en compte des publications dans HAL sans DOI et une heuristique pour estimer la présence des frais de publications (Article Processing Charges : APC). 
+Les données du présent baromètre ont été récupérées en juillet 2021 : voir les graphiques sur le site de l'université [u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/
 
-<!-- ([Présentation du baromètre sur le portail science ouverte de l'université u-paris.fr/science-ouverte](https://u-paris.fr/science-ouverte/barometre/)
--->
 
 ![](/img/bibliodiversite.png)
 
@@ -19,7 +17,7 @@ La prise en compte des publications dans HAL sans DOI _baisse_ de quelques pourc
 
 ## Sur la détection des APC
 
-L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publications. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université de Paris : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](/img/apc_evolution.png), l'autre sur [la quantité de publications avec APC par disciplines](/img/apc_discipline.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
+L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publication. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](/img/apc_evolution.png), l'autre sur [la quantité de publications avec APC par disciplines](/img/apc_discipline.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
 
 
 ## Données récoltées
