@@ -20,7 +20,7 @@ La prise en compte des publications dans HAL sans DOI _baisse_ de quelques pourc
 L'heuristique sur les APC permet de savoir si une publication a recquis des frais de publication. Attention, une publication ayant nécessité des APC ne signifie pas qu'ils ont été payés par l'université : l'heuristique est indifférente à l'établissement payeur. Cette détection petmet d'obtenir deux graphiques : l'un sur [l'évolution de la quantité de publication avec APC](/img/apc_evolution.png), l'autre sur [la quantité de publications avec APC par disciplines](/img/apc_discipline.png). La méthode utilisée pour la détection des APC est décrite dans le [baromètre 2020 de l'UVSQ ](https://github.com/ml4rrieu/barometre_science_ouverte_uvsq#pister-les-apc).
 
 
-## Données récoltées
+## Données
 
 * [Télécharger les données](/data/out/step_d_complete.csv)  
 
